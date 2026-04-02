@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { CATEGORY_OPTIONS } from "../data.js";
 
+const ADD_CATEGORY_OPTION = "__add_category__";
+
 function buildInitialForm(transaction, defaultDate) {
   return {
     id: transaction?.id ?? "",
@@ -24,9 +26,13 @@ export default function TransactionModal({
   onSave,
 }) {
   const [form, setForm] = useState(buildInitialForm(transaction, defaultDate));
+  const [customCategories, setCustomCategories] = useState([]);
+  const baseCategories = categoryOptions.length ? categoryOptions : CATEGORY_OPTIONS;
+  const availableCategories = [...new Set([...baseCategories, ...customCategories])];
 
   useEffect(() => {
     setForm(buildInitialForm(transaction, defaultDate));
+    setCustomCategories([]);
   }, [transaction, defaultDate, mode, isOpen]);
 
   if (!isOpen) {
@@ -40,12 +46,39 @@ export default function TransactionModal({
     }));
   }
 
+  function handleCategoryChange(value) {
+    if (value !== ADD_CATEGORY_OPTION) {
+      updateField("category", value);
+      return;
+    }
+
+    const enteredCategory = window.prompt("Enter a new category name");
+    const nextCategory = enteredCategory?.trim();
+
+    if (!nextCategory) {
+      return;
+    }
+
+    const matchingCategory = availableCategories.find(
+      (category) => category.toLowerCase() === nextCategory.toLowerCase()
+    );
+
+    if (matchingCategory) {
+      updateField("category", matchingCategory);
+      return;
+    }
+
+    setCustomCategories((current) => [...current, nextCategory]);
+    updateField("category", nextCategory);
+  }
+
   function handleSubmit(event) {
     event.preventDefault();
 
     const payload = {
       ...form,
       title: form.title.trim(),
+      category: form.category.trim(),
       note: form.note.trim(),
       amount: Number(form.amount),
     };
@@ -118,14 +151,15 @@ export default function TransactionModal({
               <select
                 name="category"
                 value={form.category}
-                onChange={(event) => updateField("category", event.target.value)}
+                onChange={(event) => handleCategoryChange(event.target.value)}
                 required
               >
-                {(categoryOptions.length ? categoryOptions : CATEGORY_OPTIONS).map((category) => (
+                {availableCategories.map((category) => (
                   <option key={category} value={category}>
                     {category}
                   </option>
                 ))}
+                <option value={ADD_CATEGORY_OPTION}>Add category</option>
               </select>
             </label>
             <label className="form-field">
@@ -143,11 +177,11 @@ export default function TransactionModal({
           </div>
 
           <label className="form-field">
-            <span>Note</span>
+            <span>Details</span>
             <textarea
               name="note"
               rows="3"
-              placeholder="Optional context"
+              placeholder="Add extra detail that will show on the dashboard"
               value={form.note}
               onChange={(event) => updateField("note", event.target.value)}
             />

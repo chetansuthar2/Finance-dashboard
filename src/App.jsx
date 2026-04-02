@@ -279,6 +279,20 @@ export default function App() {
     setEditor(closedEditor);
   }
 
+  function handleQuickDeleteTransaction(transactionId) {
+    if (!isAdmin) {
+      return;
+    }
+
+    const shouldDelete = window.confirm("Remove this transaction?");
+
+    if (!shouldDelete) {
+      return;
+    }
+
+    handleDeleteTransaction(transactionId);
+  }
+
   function handleRestoreSampleData() {
     if (!isAdmin) {
       return;
@@ -632,13 +646,22 @@ export default function App() {
                       </td>
                       <td>
                         {isAdmin ? (
-                          <button
-                            className="ghost-button inline-button"
-                            onClick={() => handleOpenEditor("edit", transaction.id)}
-                            type="button"
-                          >
-                            Edit
-                          </button>
+                          <div className="transaction-actions">
+                            <button
+                              className="ghost-button inline-button"
+                              onClick={() => handleOpenEditor("edit", transaction.id)}
+                              type="button"
+                            >
+                              Edit
+                            </button>
+                            <button
+                              className="ghost-button inline-button danger-button"
+                              onClick={() => handleQuickDeleteTransaction(transaction.id)}
+                              type="button"
+                            >
+                              Remove
+                            </button>
+                          </div>
                         ) : (
                           <span className="read-only-label">Read only</span>
                         )}

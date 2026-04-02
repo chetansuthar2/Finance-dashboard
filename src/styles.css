@@ -991,8 +991,24 @@ button:disabled {
   color: var(--danger);
 }
 
+.transaction-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
 .inline-button {
   padding: 0.58rem 0.9rem;
+}
+
+.danger-button {
+  color: var(--danger);
+  border-color: rgba(190, 18, 60, 0.2);
+  background: rgba(190, 18, 60, 0.08);
+}
+
+.danger-button:hover {
+  box-shadow: 0 12px 24px rgba(190, 18, 60, 0.12);
 }
 
 .read-only-label {

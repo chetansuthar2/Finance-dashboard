@@ -3,16 +3,17 @@ import { CATEGORY_OPTIONS } from "./data.js";
 const currencyFormatter = new Intl.NumberFormat("en-IN", {
   style: "currency",
   currency: "INR",
-  maximumFractionDigits: 0,
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
 });
 
-const longDateFormatter = new Intl.DateTimeFormat("en-US", {
+const longDateFormatter = new Intl.DateTimeFormat("en-IN", {
   month: "short",
   day: "numeric",
   year: "numeric",
 });
 
-const monthFormatter = new Intl.DateTimeFormat("en-US", {
+const monthFormatter = new Intl.DateTimeFormat("en-IN", {
   month: "short",
   year: "numeric",
 });
@@ -129,7 +130,7 @@ export function getSpendingBreakdown(transactions) {
       percent: (amount / total) * 100,
     }))
     .sort((a, b) => b.amount - a.amount)
-    .slice(0, 5);
+    .slice(0, 6);
 }
 
 export function getVisibleTransactions(transactions, filters) {

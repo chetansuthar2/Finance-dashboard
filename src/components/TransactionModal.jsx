@@ -136,8 +136,8 @@ export default function TransactionModal({
               <input
                 name="amount"
                 type="number"
-                min="1"
-                step="1"
+                min="0.01"
+                step="0.01"
                 value={form.amount}
                 onChange={(event) => updateField("amount", event.target.value)}
                 required
